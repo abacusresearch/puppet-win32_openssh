@@ -82,11 +82,13 @@ class win32_openssh
       false => Service['sshd'],
     }
 
-    file { 'sshd_config':
-        ensure  => $ensure,
-        name    => 'C:/ProgramData/ssh/sshd_config',
-        content => template('win32_openssh/sshd_config.erb'),
-        notify  => Service['sshd'],
+    if $ensure == 'present' {
+        file { 'sshd_config':
+            ensure  => $ensure,
+            name    => 'C:/ProgramData/ssh/sshd_config',
+            content => template('win32_openssh/sshd_config.erb'),
+            notify  => Service['sshd'],
+        }
     }
 
     # Set default shell for ssh, unless it is set (to something) already
