@@ -97,11 +97,13 @@ class win32_openssh
         default => $default_shell,
     }
 
-    exec { 'Set-SSHDefaultShell.ps1':
-        command  => "C:/ProgramData/chocolatey/lib/openssh/tools/Set-SSHDefaultShell.ps1 -PathSpecsToProbeForShellEXEString \"${pathspec}\"",
-        unless   => 'if ((Get-Item -Path HKLM:\SOFTWARE\openssh -Erroraction ignore).property -contains "DefaultShell") { exit 0 } else { exit 1 }',
-        provider => 'powershell',
-        require  => $require_package,
+    if $ensure == 'present' {
+        exec { 'Set-SSHDefaultShell.ps1':
+            command  => "C:/ProgramData/chocolatey/lib/openssh/tools/Set-SSHDefaultShell.ps1 -PathSpecsToProbeForShellEXEString \"${pathspec}\"",
+            unless   => 'if ((Get-Item -Path HKLM:\SOFTWARE\openssh -Erroraction ignore).property -contains "DefaultShell") { exit 0 } else { exit 1 }',
+            provider => 'powershell',
+            require  => $require_package,
+        }
     }
 
     if $ensure == 'present' {
